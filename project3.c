@@ -413,7 +413,7 @@ void student_info()
 {
     struct student_info s1= { "Safayet Abir", 232,15,225 };
     struct student_info s2= { "Ratul De Sarkar", 232,15,210};
-    struct student_info s3= { "Tanzina Rhaman", 232,15,296};
+    struct student_info s3= { "Tanzina Rhaman prithu", 232,15,296};
     printf("\n\n");
     printf("\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
     printf("\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
