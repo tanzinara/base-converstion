@@ -193,55 +193,38 @@ void binary_conversion(int choice,int amount)//parameter
         printf("Hexa-decimal value : %X\n",decimal_number);
     }
 }
-void octal_conversion(int choice,int amount)
+void octal_conversion(int choice,char* source_num)
 {
 
     if(choice==1)// If the user chose binary conversion
     {
-        int converted_value[100],j=0,decimal_number=0,i=0;
-        while (amount != 0)
+        int converted_value[100], decimal_number = 0, i = 0;
+        long decimalnum = strtol(source_num, NULL, 8);
+
+
+        while (decimalnum > 0)
         {
-            int remainder = amount % 10;// digit of the octal number
-            amount /= 10;
-            decimal_number += remainder * pow(8, i);// Calculate the decimal count
-            ++i;
+            converted_value[i] = decimalnum % 2;
+            decimalnum = decimalnum / 2;
+            i++;
         }
-        while (decimal_number> 0) // Convert decimal to binary
-        {
-            converted_value[j] = decimal_number % 2;
-            decimal_number = decimal_number / 2;
-            j++;
-        }
+
         printf("Binary value: ");
-        for(int k = j - 1; k>=0; k--)
+        for (int k = i - 1; k >= 0; k--)
         {
-            printf("%d",converted_value[k]);
+            printf("%d", converted_value[k]);
         }
 
     }
     else if(choice==2)// If the user chose decimal conversion
     {
-        int decimal_number=0,i=0;
-        while (amount != 0)
-        {
-            int remainder = amount % 10;
-            amount /= 10;
-            decimal_number += remainder * pow(8, i);// Calculate the decimal count
-            ++i;
-        }
-        printf("Decimal value : %d\n",decimal_number);
+        long decimalnum=strtol(source_num,NULL,8);
+        printf("Decimal value : %ld\n",decimalnum);
     }
     else if(choice==3) // If the user chose hexadecimal conversion
     {
-        int decimal_number=0,i=0;
-        while (amount != 0)
-        {
-            int remainder = amount % 10;
-            amount /= 10;
-            decimal_number += remainder * pow(8, i);
-            ++i;
-        }
-        printf("Hexa-decimal : %X\n",decimal_number);
+        long decimalnum=strtol(source_num,NULL,8);
+        printf("Hexa-decimal : %X\n",decimalnum);
     }
 }
 
@@ -256,8 +239,8 @@ void hexa_conversion(int choice,int amount)
 
         while (decimal_number> 0)
         {
-            converted_value[j] = decimal_number % 2;//61%2=1
-            decimal_number = decimal_number / 2;//30/2=15
+            converted_value[j] = decimal_number % 2;
+            decimal_number = decimal_number / 2;
             j++;
         }
         printf("Binary value : ");
@@ -343,10 +326,10 @@ void sub_menu()
 void calc_menu(int pick_up)
 {
     int choice,amount;
-    char source_num[100];
+    char source_num[1000];
     int source_base, destination_base;
-    char destination_num[100];
-    if(pick_up<=3)
+    char destination_num[1000];
+    if(pick_up<=2)
     {
 
         printf("\n>>Choose conversion: ");
@@ -354,6 +337,14 @@ void calc_menu(int pick_up)
         system("cls");
         printf("\nEnter amount: ");
         scanf("%d",&amount);//for Binary to Octal
+    }
+    else if(pick_up==3)//For hexa-decimal
+    {
+        printf("\n>>Choose conversion: ");
+        scanf("%d",&choice);
+        system("cls");
+        printf("\nEnter amount: ");
+        scanf("%s",source_num);
     }
     else if(pick_up==4)//For hexa-decimal
     {
@@ -383,7 +374,7 @@ void calc_menu(int pick_up)
         binary_conversion(choice,amount);
         break;
     case 3:
-        octal_conversion(choice,amount);
+        octal_conversion(choice,source_num);
         break;
     case 4:
         hexa_conversion(choice,amount);
@@ -413,7 +404,7 @@ void student_info()
 {
     struct student_info s1= { "Safayet Abir", 232,15,225 };
     struct student_info s2= { "Ratul De Sarkar", 232,15,210};
-    struct student_info s3= { "Tanzina Rhaman prithu", 232,15,296};
+    struct student_info s3= { "Tanzina Rhaman", 232,15,296};
     printf("\n\n");
     printf("\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
     printf("\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
@@ -448,34 +439,27 @@ void student_info()
 void convertBase(const char* source_num, int source_base, char* destination_num, int destination_base)// Function to convert a number from one base to another
 {
 
-    char digits[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";// Define the characters for digits beyond 9 (for bases > 10)
+    long decimalNumber = strtol(source_num, NULL, source_base);
 
-    // Convert the source number to base 10
-    int decimal_num = 0;
-    int source_len = strlen(source_num);//character count
-    for (int i = 0; i < source_len; i++)
-    {
-        char digit = source_num[i];
-        int value = (digit >= '0' && digit <= '9') ? (digit - '0') : (digit - 'A' + 10);
-        decimal_num = decimal_num * source_base + value;
+    char result[100];
+    int index = 0;
+
+    while (decimalNumber > 0) {
+        int remainder = decimalNumber % destination_base;
+        result[index++] = (remainder < 10) ? (char)(remainder + '0') : (char)(remainder - 10 + 'A');
+        decimalNumber /= destination_base;
     }
-    // Convert the decimal number to the destination base
-    int destination_index = 0;
-    while (decimal_num > 0)
-    {
-        int remainder = decimal_num % destination_base;
-        destination_num[destination_index++] = digits[remainder];
-        decimal_num /= destination_base;
+
+    if (index == 0) {
+        result[index++] = '0';
     }
-    // Reverse the destination number
-    for (int i = 0; i < destination_index / 2; i++)
-    {
-        char temp = destination_num[i];
-        destination_num[i] = destination_num[destination_index - i - 1];
-        destination_num[destination_index - i - 1] = temp;
+
+    // Print the result in reverse order
+    printf("Any to any conversion :");
+    for (int i = index - 1; i >= 0; i--) {
+        printf("%c", result[i]);
     }
-    destination_num[destination_index] = '\0';// Null-terminate the destination number
-    printf("Any to any converstion : %s\n",destination_num);
+    printf("\n");
 
 }
 
